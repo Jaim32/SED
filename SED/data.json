@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "name": "jaime",
+      "email": "asd@gmail.com",
+      "password": "$2b$10$Vk.I0pb3WXz0N3tkcUlOnO.n.kM3.jxFmcgslkkdCbF.AdTqdGDZu"
+    },
+    {
+      "name": "jaime",
+      "email": "asd123@gmail.com",
+      "password": "$2b$10$D9/e5yBOhM5ZNcgBL4mXS.5OERY41lDEc6ROH4m0K4ThnexSmzCoi"
+    },
+    {
+      "name": "jaime",
+      "email": "asdf1234@gmail.com",
+      "password": "$2b$10$bI6swu0XI92ymvlMMQqCC.ZEjbULvyui9ICb0FuchOZsQnjO0hDxe",
+      "role": "superadmin"
+    },
+    {
+      "name": "Admin",
+      "email": "admin",
+      "password": "$2b$10$oEyMLJMRHRrsIR.MQxVqE.163cKlQ3rD2HwEzq96e2o6R.7.sKzZq",
+      "role": "superadmin"
+    },
+    {
+      "name": "jm",
+      "email": "jm@gmailcom",
+      "password": "$2b$10$Uiy0gBudGJ6nN51hqTPvVOVeETB2A3J.c4ihoKDxOC4cwZewnSnsO",
+      "role": "eventcreator"
+    }
+  ],
+  "events": [
+    {
+      "title": "sdasd",
+      "date": "2024-11-02",
+      "location": "sdaasd",
+      "description": "dsadasdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "user": "jm@gmailcom"
+    },
+    {
+      "title": "ada",
+      "date": "2024-10-30",
+      "location": "dsasda",
+      "description": "dsadsasadasdadasxascac",
+      "user": "jm@gmailcom"
+    }
+  ]
+}

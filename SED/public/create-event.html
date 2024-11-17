@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Evento</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>Crear un Nuevo Evento</h1>
+    <form id="create-event-form">
+        <label for="title">Título del Evento:</label>
+        <input type="text" id="title" required>
+        <br>
+        <label for="date">Fecha:</label>
+        <input type="date" id="date" required>
+        <br>
+        <label for="location">Ubicación:</label>
+        <input type="text" id="location" required>
+        <br>
+        <label for="description">Descripción:</label>
+        <textarea id="description" required></textarea>
+        <br>
+        <button type="submit">Crear Evento</button>
+    </form>
+    <p><a href="my-events.html">Volver a Mis Eventos</a></p>
+    <script src="js/create-event.js"></script>
+</body>
+</html>
