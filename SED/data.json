@@ -27,22 +27,35 @@
       "email": "jm@gmailcom",
       "password": "$2b$10$Uiy0gBudGJ6nN51hqTPvVOVeETB2A3J.c4ihoKDxOC4cwZewnSnsO",
       "role": "eventcreator"
+    },
+    {
+      "name": "Super Admin",
+      "email": "admin@admin.com",
+      "password": "$2b$10$xiH70.AKjuPqDngoKg2EROsUtMvIcreJ9aidIVv9ImX6oqpad11W2",
+      "role": "superadmin"
     }
   ],
   "events": [
-    {
-      "title": "sdasd",
-      "date": "2024-11-02",
-      "location": "sdaasd",
-      "description": "dsadasdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "user": "jm@gmailcom"
-    },
     {
       "title": "ada",
       "date": "2024-10-30",
       "location": "dsasda",
       "description": "dsadsasadasdadasxascac",
       "user": "jm@gmailcom"
+    },
+    {
+      "title": "chamba_web",
+      "date": "2024-11-18",
+      "location": "casa de chavez",
+      "description": "chambear el proyecto de web",
+      "user": "admin@admin.com"
+    },
+    {
+      "title": "comienzo de la chamba de canjura ",
+      "date": "2024-11-19",
+      "location": "posiblemaente casa de chavez ",
+      "description": "dsasdadasdadsadasd",
+      "user": "admin@admin.com"
     }
   ]
 }

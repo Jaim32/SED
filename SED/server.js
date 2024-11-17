@@ -4,19 +4,18 @@ const url = require('url');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// Cargar datos desde el archivo data.json
 let data = JSON.parse(fs.readFileSync('./data.json', 'utf-8'));
 
 const SECRET = 'secret';
 
-// Crear usuario administrador predeterminado si no existe
+// Usuario superadmin quemado
 const adminUser = {
-    name: 'Admin',
-    email: 'admin',
-    password: bcrypt.hashSync('admin', 10),
+    name: 'Super Admin',
+    email: 'admin@admin.com',
+    password: bcrypt.hashSync('admin', 10), // Contraseña "admin"
     role: 'superadmin',
 };
-if (!data.users.some(user => user.email === 'admin')) {
+if (!data.users.some(user => user.email === 'admin@admin.com')) {
     data.users.push(adminUser);
     saveData();
 }
@@ -28,7 +27,7 @@ const server = http.createServer((req, res) => {
     console.log('Solicitud recibida:', parsedUrl.pathname);
 
     if (parsedUrl.pathname === '/favicon.ico') {
-        res.writeHead(204); // No Content
+        res.writeHead(204);
         res.end();
         return;
     }
@@ -47,13 +46,14 @@ const server = http.createServer((req, res) => {
         handleCreateEvent(req, res);
     } else if (parsedUrl.pathname === '/events' && method === 'DELETE') {
         handleDeleteEvent(req, res);
+    } else if (parsedUrl.pathname === '/events/edit' && method === 'POST') {
+        handleEditEvent(req, res);
     } else {
         res.writeHead(404);
         res.end('Not Found');
     }
 });
 
-// Servir archivos estáticos
 function serveStaticFile(filePath, res) {
     const fullPath = `.${filePath}`;
     fs.readFile(fullPath, (err, data) => {
@@ -72,7 +72,6 @@ function serveStaticFile(filePath, res) {
     });
 }
 
-// Registro de usuarios
 function handleRegister(req, res) {
     let body = '';
     req.on('data', chunk => (body += chunk));
@@ -92,7 +91,6 @@ function handleRegister(req, res) {
     });
 }
 
-// Inicio de sesión
 function handleLogin(req, res) {
     let body = '';
     req.on('data', chunk => (body += chunk));
@@ -110,7 +108,6 @@ function handleLogin(req, res) {
     });
 }
 
-// Obtener todos los eventos
 function handleGetEvents(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -119,9 +116,9 @@ function handleGetEvents(req, res) {
         return;
     }
     try {
-        jwt.verify(token, SECRET); // Verifica el token
+        jwt.verify(token, SECRET);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(data.events)); // Devuelve todos los eventos
+        res.end(JSON.stringify(data.events));
     } catch (err) {
         console.error('Error al verificar token:', err);
         res.writeHead(403);
@@ -129,7 +126,6 @@ function handleGetEvents(req, res) {
     }
 }
 
-// Obtener eventos creados por un usuario específico
 function handleGetMyEvents(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -148,7 +144,6 @@ function handleGetMyEvents(req, res) {
     }
 }
 
-// Crear un nuevo evento
 function handleCreateEvent(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -179,7 +174,7 @@ function handleCreateEvent(req, res) {
     });
 }
 
-// Eliminar un evento
+
 function handleDeleteEvent(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -202,14 +197,56 @@ function handleDeleteEvent(req, res) {
             saveData();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'Evento eliminado exitosamente' }));
-        } catch {
+        } catch (err) {
+            console.error('Error al procesar la solicitud:', err);
             res.writeHead(401);
-            res.end('Token inválido');
+            res.end(JSON.stringify({ message: 'Token inválido' }));
         }
     });
 }
 
-// Guardar datos en data.json
+function handleEditEvent(req, res) {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        res.writeHead(401);
+        res.end(JSON.stringify({ message: 'No autorizado' }));
+        return;
+    }
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+        try {
+            const decoded = jwt.verify(token, SECRET);
+            if (decoded.role !== 'superadmin') {
+                res.writeHead(403);
+                res.end(JSON.stringify({ message: 'No tienes permisos para editar eventos' }));
+                return;
+            }
+            const { title, newTitle, newDate, newLocation, newDescription } = JSON.parse(body);
+            const eventIndex = data.events.findIndex(event => event.title === title);
+            if (eventIndex === -1) {
+                res.writeHead(404);
+                res.end(JSON.stringify({ message: 'Evento no encontrado' }));
+                return;
+            }
+            data.events[eventIndex] = {
+                ...data.events[eventIndex],
+                title: newTitle || data.events[eventIndex].title,
+                date: newDate || data.events[eventIndex].date,
+                location: newLocation || data.events[eventIndex].location,
+                description: newDescription || data.events[eventIndex].description,
+            };
+            saveData();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Evento editado exitosamente' }));
+        } catch (err) {
+            console.error('Error al procesar la solicitud:', err);
+            res.writeHead(401);
+            res.end(JSON.stringify({ message: 'Token inválido' }));
+        }
+    });
+}
+
 function saveData() {
     fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
 }

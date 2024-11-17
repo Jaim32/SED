@@ -1,60 +1,160 @@
+/* Estilos globales */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
+    font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    line-height: 1.6;
 }
 
-form {
-    max-width: 400px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-form label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-form input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-}
-
-button {
-    padding: 10px 15px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-#button-container {
-    margin-bottom: 20px;
+h1, h2, h3 {
     text-align: center;
+    margin: 20px 0;
+    color: #444;
 }
 
-#button-container button {
-    background-color: #28a745;
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Botones */
+button {
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    margin: 5px;
+    transition: background-color 0.3s ease;
 }
 
-#button-container button:hover {
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Contenedores */
+#button-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+#events-container,
+#my-events-container,
+#manage-events-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px;
+}
+
+/* Tarjetas (cards) */
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #007bff;
+}
+
+.card p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.card .actions {
+    margin-top: 10px;
+}
+
+.card .actions button {
+    background-color: #28a745;
+    margin: 5px;
+}
+
+.card .actions button:hover {
     background-color: #218838;
+}
+
+/* Botón eliminar */
+.card .actions .delete-btn {
+    background-color: #dc3545;
+}
+
+.card .actions .delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Formularios */
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+form input, form textarea, form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+form button {
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Mensaje vacío */
+.empty-message {
+    text-align: center;
+    color: #666;
+    font-size: 18px;
+    margin-top: 20px;
 }
