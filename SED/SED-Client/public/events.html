@@ -7,11 +7,31 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <header class="main-header">
+        <div class="header-container">
+            <h1 class="website-title">Events-Share</h1>
+            <button id="logout-button" class="logout-btn">Log Out</button>
+        </div>
+    </header>    
+    
     <div class="container">
         <h1>Todos los Eventos</h1>
         <div id="button-container"></div> <!-- Botones dinámicos -->
         <div id="events-container"></div> <!-- Contenedor para tarjetas -->
     </div>
     <script src="js/events.js"></script>
+    <script>
+        // Script para manejar el logout
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutButton = document.getElementById('logout-button');
+
+            logoutButton.addEventListener('click', () => {
+                if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

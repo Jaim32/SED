@@ -252,7 +252,6 @@ form button:hover {
 
 .card .actions {
     display: flex;
-    justify-content: space-between;
     margin-top: 12px;
 }
 
@@ -275,5 +274,52 @@ button.delete-btn {
 }
 
 button:hover {
+    opacity: 0.9;
+}
+/* Header Principal */
+.main-header {
+    background-color: #000000;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Contenedor del Header */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Estilo del Título del Sitio */
+.website-title {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin: 0;
+    text-align: left;
+    color: #000000;
+}
+
+/* Botón de Log Out */
+.logout-btn {
+    background-color: #f28b82; /* Rojo pastel */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.logout-btn:hover {
+    background-color: #fa5f5f; /* Rojo pastel más oscuro */
     opacity: 0.9;
 }

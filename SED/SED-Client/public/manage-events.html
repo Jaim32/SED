@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <header class="main-header">
+        <div class="header-container">
+            <h1 class="website-title">Events-Share</h1>
+            <button id="logout-button" class="logout-btn">Log Out</button>
+        </div>
+    </header>
+    
     <div class="container">
         <h1>Gestionar Eventos</h1>
         <div id="manage-events-container"></div> <!-- Contenedor para tarjetas -->
@@ -37,5 +44,16 @@
         </div>
     </div>
     <script src="js/manage-events.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton.addEventListener('click', () => {
+                if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
