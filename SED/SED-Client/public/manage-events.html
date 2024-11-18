@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar Eventos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gestionar Eventos</h1>
+        <div id="manage-events-container"></div> <!-- Contenedor para tarjetas -->
+
+        <!-- Popup para editar eventos -->
+        <div id="edit-popup" class="popup hidden">
+            <div class="popup-content">
+                <h2>Editar Evento</h2>
+                <form id="edit-event-form">
+                    <label for="edit-title">Título del Evento:</label>
+                    <input type="text" id="edit-title" required>
+
+                    <label for="edit-date">Fecha:</label>
+                    <input type="date" id="edit-date" required>
+
+                    <label for="edit-location">Ubicación:</label>
+                    <input type="text" id="edit-location" required>
+
+                    <label for="edit-description">Descripción:</label>
+                    <textarea id="edit-description" required></textarea>
+
+                    <div class="popup-actions">
+                        <button type="button" id="cancel-edit">Cancelar</button>
+                        <button type="submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/manage-events.js"></script>
+</body>
+</html>

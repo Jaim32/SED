@@ -1,0 +1,75 @@
+{
+  "users": [
+    {
+      "name": "jaime",
+      "email": "asd@gmail.com",
+      "password": "$2b$10$Vk.I0pb3WXz0N3tkcUlOnO.n.kM3.jxFmcgslkkdCbF.AdTqdGDZu"
+    },
+    {
+      "name": "jaime",
+      "email": "asd123@gmail.com",
+      "password": "$2b$10$D9/e5yBOhM5ZNcgBL4mXS.5OERY41lDEc6ROH4m0K4ThnexSmzCoi"
+    },
+    {
+      "name": "jaime",
+      "email": "asdf1234@gmail.com",
+      "password": "$2b$10$bI6swu0XI92ymvlMMQqCC.ZEjbULvyui9ICb0FuchOZsQnjO0hDxe",
+      "role": "superadmin"
+    },
+    {
+      "name": "Admin",
+      "email": "admin",
+      "password": "$2b$10$oEyMLJMRHRrsIR.MQxVqE.163cKlQ3rD2HwEzq96e2o6R.7.sKzZq",
+      "role": "superadmin"
+    },
+    {
+      "name": "jm",
+      "email": "jm@gmailcom",
+      "password": "$2b$10$Uiy0gBudGJ6nN51hqTPvVOVeETB2A3J.c4ihoKDxOC4cwZewnSnsO",
+      "role": "eventcreator"
+    },
+    {
+      "name": "Super Admin",
+      "email": "admin@admin.com",
+      "password": "$2b$10$xiH70.AKjuPqDngoKg2EROsUtMvIcreJ9aidIVv9ImX6oqpad11W2",
+      "role": "superadmin"
+    }
+  ],
+  "events": [
+    {
+      "title": "chamba_web",
+      "date": "2024-11-18",
+      "location": "casa de chavez",
+      "description": "chambear el proyecto de web",
+      "user": "admin@admin.com"
+    },
+    {
+      "title": "comienzo de la chamba de canjura ",
+      "date": "2024-11-19",
+      "location": "posiblemaente casa de chavez ",
+      "description": "dsasdadasdadsadasd",
+      "user": "admin@admin.com"
+    },
+    {
+      "title": "asdada",
+      "date": "2024-11-29",
+      "location": "sdada",
+      "description": "dsadas",
+      "user": "admin@admin.com"
+    },
+    {
+      "title": "ljljk",
+      "date": "2024-11-23",
+      "location": "lkjkj",
+      "description": "lkjklj",
+      "user": "admin@admin.com"
+    },
+    {
+      "title": "22222222222222222222222222",
+      "date": "2024-11-01",
+      "location": "11111111111111",
+      "description": "11111111111111111111111",
+      "user": "admin@admin.com"
+    }
+  ]
+}
