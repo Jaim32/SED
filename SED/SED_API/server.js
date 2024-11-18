@@ -199,7 +199,7 @@ function handleDeleteEvent(req, res) {
 function handleEditEvent(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
-        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.writeHead(401);
         res.end(JSON.stringify({ message: 'No autorizado' }));
         return;
     }
@@ -208,34 +208,56 @@ function handleEditEvent(req, res) {
     req.on('end', () => {
         try {
             const decoded = jwt.verify(token, SECRET);
-            if (decoded.role !== 'superadmin') {
-                res.writeHead(403, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'No tienes permisos para editar eventos' }));
-                return;
-            }
+            console.log('Token decodificado:', decoded);
+
             const { title, newTitle, newDate, newLocation, newDescription } = JSON.parse(body);
+            console.log('Datos recibidos para editar:', { title, newTitle, newDate, newLocation, newDescription });
+
             const eventIndex = data.events.findIndex(event => event.title === title);
             if (eventIndex === -1) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.writeHead(404);
                 res.end(JSON.stringify({ message: 'Evento no encontrado' }));
                 return;
             }
-            data.events[eventIndex] = {
-                ...data.events[eventIndex],
-                title: newTitle || data.events[eventIndex].title,
-                date: newDate || data.events[eventIndex].date,
-                location: newLocation || data.events[eventIndex].location,
-                description: newDescription || data.events[eventIndex].description,
-            };
+
+            const event = data.events[eventIndex];
+
+            // Permitir que el superadmin edite cualquier evento
+            if (decoded.role === 'superadmin') {
+                data.events[eventIndex] = {
+                    ...event,
+                    title: newTitle || event.title,
+                    date: newDate || event.date,
+                    location: newLocation || event.location,
+                    description: newDescription || event.description,
+                };
+            }
+            // Permitir que el creador del evento edite solo sus eventos
+            else if (decoded.role === 'eventcreator' && event.user === decoded.email) {
+                data.events[eventIndex] = {
+                    ...event,
+                    title: newTitle || event.title,
+                    date: newDate || event.date,
+                    location: newLocation || event.location,
+                    description: newDescription || event.description,
+                };
+            } else {
+                res.writeHead(403, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'No tienes permisos para editar este evento' }));
+                return;
+            }
+
             saveData();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'Evento editado exitosamente' }));
-        } catch {
-            res.writeHead(401, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Token inválido' }));
+        } catch (err) {
+            console.error('Error al procesar la solicitud:', err);
+            res.writeHead(401);
+            res.end(JSON.stringify({ message: 'Token inválido o datos inválidos' }));
         }
     });
 }
+
 
 function saveData() {
     fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));

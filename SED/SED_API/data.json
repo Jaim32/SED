@@ -33,6 +33,12 @@
       "email": "admin@admin.com",
       "password": "$2b$10$xiH70.AKjuPqDngoKg2EROsUtMvIcreJ9aidIVv9ImX6oqpad11W2",
       "role": "superadmin"
+    },
+    {
+      "name": "jaime",
+      "email": "jm2@gmail.com",
+      "password": "$2b$10$KjZ52rKXDX1VQUWzFaK7WuRBrshU88kt.e0XTijyW8ePPcdfI.L4.",
+      "role": "eventcreator"
     }
   ],
   "events": [
@@ -58,7 +64,7 @@
       "user": "admin@admin.com"
     },
     {
-      "title": "ljljk",
+      "title": "kkk",
       "date": "2024-11-23",
       "location": "lkjkj",
       "description": "lkjklj",
@@ -70,6 +76,13 @@
       "location": "11111111111111",
       "description": "11111111111111111111111",
       "user": "admin@admin.com"
+    },
+    {
+      "title": "z",
+      "date": "2024-11-02",
+      "location": "aaaaaaaaaaaaaaaaaaaaaa",
+      "description": "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "user": "jm@gmailcom"
     }
   ]
 }

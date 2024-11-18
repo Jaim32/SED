@@ -6,61 +6,64 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const userRole = payload.role;
-    const isSuperAdmin = userRole === 'superadmin';
-
-    const container = document.getElementById('my-events-container');
+    // Obtener referencias a los elementos HTML
     const popup = document.getElementById('edit-popup');
     const form = document.getElementById('edit-event-form');
     const cancelEditButton = document.getElementById('cancel-edit');
+    const container = document.getElementById('my-events-container');
+    const createEventButton = document.getElementById('create-event-button');
 
-    let currentEventTitle = ''; // Título original del evento a editar
-
-    // Mostrar botón de "Crear Evento" si el usuario es un creador de eventos o superadmin
-    if (userRole === 'eventcreator' || isSuperAdmin) {
-        const buttonContainer = document.getElementById('button-container');
-        const createEventButton = document.createElement('button');
-        createEventButton.textContent = 'Crear Evento';
-        createEventButton.onclick = () => {
-            window.location.href = 'create-event.html';
-        };
-        buttonContainer.appendChild(createEventButton);
+    if (!popup || !form || !cancelEditButton || !container || !createEventButton) {
+        console.error('Elementos necesarios no encontrados. Verifica la estructura de la página.');
+        return;
     }
 
-    // Cargar eventos del usuario (o todos si es superadmin)
-    try {
-        const url = isSuperAdmin ? 'http://localhost:3001/events' : 'http://localhost:3001/my-events';
-        const response = await fetch(url, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+    let currentEventTitle = ''; // Título del evento a editar
 
-        if (!response.ok) throw new Error('Error al cargar los eventos');
+    // Función para cargar eventos del usuario actual
+    async function loadEvents() {
+        try {
+            const response = await fetch('http://localhost:3001/my-events', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-        const events = await response.json();
+            if (!response.ok) {
+                if (response.status === 401) {
+                    alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                throw new Error('Error al cargar los eventos');
+            }
 
-        if (events.length === 0) {
-            container.innerHTML = '<p class="empty-message">No hay eventos disponibles.</p>';
-            return;
+            const events = await response.json();
+
+            container.innerHTML = ''; // Limpiar contenido anterior
+
+            if (events.length === 0) {
+                container.innerHTML = '<p class="empty-message">No hay eventos disponibles.</p>';
+                return;
+            }
+
+            events.forEach(event => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h2>${event.title}</h2>
+                    <p><strong>Fecha:</strong> ${event.date}</p>
+                    <p><strong>Ubicación:</strong> ${event.location}</p>
+                    <p>${event.description}</p>
+                    <div class="actions">
+                        <button onclick="openEditPopup('${event.title}', '${event.date}', '${event.location}', '${event.description}')">Editar</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        } catch (error) {
+            console.error('Error al cargar los eventos:', error);
+            alert('Error al cargar los eventos');
         }
-
-        events.forEach(event => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <h2>${event.title}</h2>
-                <p><strong>Fecha:</strong> ${event.date}</p>
-                <p><strong>Ubicación:</strong> ${event.location}</p>
-                <p>${event.description}</p>
-                <div class="actions">
-                    <button onclick="openEditPopup('${event.title}', '${event.date}', '${event.location}', '${event.description}')">Editar</button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    } catch (error) {
-        console.error('Error al cargar los eventos:', error);
-        alert('Error al cargar los eventos');
     }
 
     // Función para abrir el popup
@@ -95,17 +98,39 @@ document.addEventListener('DOMContentLoaded', async () => {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title: currentEventTitle, newTitle, newDate, newLocation, newDescription }),
+                body: JSON.stringify({
+                    title: currentEventTitle,
+                    newTitle: newTitle,
+                    newDate: newDate,
+                    newLocation: newLocation,
+                    newDescription: newDescription,
+                }),
             });
 
-            if (!response.ok) throw new Error('Error al editar el evento');
+            if (!response.ok) {
+                if (response.status === 403) {
+                    throw new Error('No tienes permisos para editar este evento');
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al editar el evento');
+            }
 
             alert('Evento editado exitosamente');
             popup.classList.add('hidden'); // Cerrar el popup
-            window.location.reload();
+            await loadEvents(); // Recargar eventos después de editar
         } catch (error) {
             console.error('Error al guardar los cambios:', error);
-            alert('Error al guardar los cambios');
+            alert(error.message || 'Error al guardar los cambios');
         }
     });
+
+    // Redirigir a la página de creación de eventos al hacer clic en "Crear Evento"
+    createEventButton.addEventListener('click', () => {
+        console.log('Botón de Crear Evento clickeado. Redirigiendo a create-event.html...');
+        window.location.href = 'create-event.html'; // Redirige a la página de creación
+    });
+
+    // Cargar eventos al cargar la página
+    await loadEvents();
 });
+    
