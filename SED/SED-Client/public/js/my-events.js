@@ -55,10 +55,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p><strong>Ubicación:</strong> ${event.location}</p>
                     <p>${event.description}</p>
                     <div class="actions">
-                        <button onclick="openEditPopup('${event.title}', '${event.date}', '${event.location}', '${event.description}')">Editar</button>
+                        <button class="edit-btn" data-title="${event.title}" data-date="${event.date}" data-location="${event.location}" data-description="${event.description}">Editar</button>
+                        <button class="delete-btn" data-title="${event.title}">Eliminar</button>
                     </div>
                 `;
                 container.appendChild(card);
+            });
+
+            // Asegurar eventos a los botones de editar y eliminar
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const title = e.target.dataset.title;
+                    const date = e.target.dataset.date;
+                    const location = e.target.dataset.location;
+                    const description = e.target.dataset.description;
+
+                    openEditPopup(title, date, location, description);
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const title = e.target.dataset.title;
+                    if (confirm(`¿Estás seguro de que deseas eliminar el evento "${title}"?`)) {
+                        await deleteEvent(title);
+                    }
+                });
             });
         } catch (error) {
             console.error('Error al cargar los eventos:', error);
@@ -66,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Función para abrir el popup
+    // Función para abrir el popup de edición
     window.openEditPopup = (title, date, location, description) => {
         currentEventTitle = title;
         document.getElementById('edit-title').value = title;
@@ -77,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         popup.classList.remove('hidden');
     };
 
-    // Cerrar el popup al cancelar
+    // Función para cerrar el popup al cancelar
     cancelEditButton.addEventListener('click', () => {
         popup.classList.add('hidden');
     });
@@ -124,13 +146,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    // Función para eliminar un evento
+    async function deleteEvent(title) {
+        try {
+            const response = await fetch('http://localhost:3001/events', {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title }),
+            });
+
+            if (!response.ok) {
+                if (response.status === 403) {
+                    throw new Error('No tienes permisos para eliminar este evento');
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al eliminar el evento');
+            }
+
+            alert('Evento eliminado exitosamente');
+            await loadEvents(); // Recargar eventos después de eliminar
+        } catch (error) {
+            console.error('Error al eliminar el evento:', error);
+            alert(error.message || 'Error al eliminar el evento');
+        }
+    }
+
     // Redirigir a la página de creación de eventos al hacer clic en "Crear Evento"
     createEventButton.addEventListener('click', () => {
-        console.log('Botón de Crear Evento clickeado. Redirigiendo a create-event.html...');
         window.location.href = 'create-event.html'; // Redirige a la página de creación
     });
 
     // Cargar eventos al cargar la página
     await loadEvents();
 });
-    
