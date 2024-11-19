@@ -52,28 +52,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                 card.innerHTML = `
                     <h2>${event.title}</h2>
                     <p><strong>Fecha:</strong> ${event.date}</p>
+                    <p><strong>Hora:</strong> ${event.hour}</p>
                     <p><strong>Ubicación:</strong> ${event.location}</p>
                     <p>${event.description}</p>
+                    <p><strong>Contacto:</strong> <a href="mailto:${event.contact}">${event.contact}</a></p>
                     <div class="actions">
-                        <button class="edit-btn" data-title="${event.title}" data-date="${event.date}" data-location="${event.location}" data-description="${event.description}">Editar</button>
+                        <button class="edit-btn" data-title="${event.title}" data-date="${event.date}" data-hour="${event.hour}" data-location="${event.location}" data-description="${event.description}" data-contact="${event.contact}">Editar</button>
                         <button class="delete-btn" data-title="${event.title}">Eliminar</button>
                     </div>
                 `;
                 container.appendChild(card);
             });
 
-            // Asegurar eventos a los botones de editar y eliminar
+            // Asignar eventos a los botones de editar
             document.querySelectorAll('.edit-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    const title = e.target.dataset.title;
-                    const date = e.target.dataset.date;
-                    const location = e.target.dataset.location;
-                    const description = e.target.dataset.description;
+                    const { title, date, hour, location, description, contact } = e.target.dataset;
 
-                    openEditPopup(title, date, location, description);
+                    openEditPopup(title, date, hour, location, description, contact);
                 });
             });
 
+            // Asignar eventos a los botones de eliminar
             document.querySelectorAll('.delete-btn').forEach(button => {
                 button.addEventListener('click', async (e) => {
                     const title = e.target.dataset.title;
@@ -89,17 +89,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Función para abrir el popup de edición
-    window.openEditPopup = (title, date, location, description) => {
+    window.openEditPopup = (title, date, hour, location, description, contact) => {
         currentEventTitle = title;
         document.getElementById('edit-title').value = title;
         document.getElementById('edit-date').value = date;
+        document.getElementById('edit-hour').value = hour;
         document.getElementById('edit-location').value = location;
         document.getElementById('edit-description').value = description;
+        document.getElementById('edit-contact').value = contact;
 
         popup.classList.remove('hidden');
     };
 
-    // Función para cerrar el popup al cancelar
+    // Cerrar el popup al cancelar
     cancelEditButton.addEventListener('click', () => {
         popup.classList.add('hidden');
     });
@@ -110,8 +112,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const newTitle = document.getElementById('edit-title').value;
         const newDate = document.getElementById('edit-date').value;
+        const newHour = document.getElementById('edit-hour').value;
         const newLocation = document.getElementById('edit-location').value;
         const newDescription = document.getElementById('edit-description').value;
+        const newContact = document.getElementById('edit-contact').value;
 
         try {
             const response = await fetch('http://localhost:3001/events/edit', {
@@ -122,17 +126,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 body: JSON.stringify({
                     title: currentEventTitle,
-                    newTitle: newTitle,
-                    newDate: newDate,
-                    newLocation: newLocation,
-                    newDescription: newDescription,
+                    newTitle,
+                    newDate,
+                    newHour,
+                    newLocation,
+                    newDescription,
+                    newContact,
                 }),
             });
 
             if (!response.ok) {
-                if (response.status === 403) {
-                    throw new Error('No tienes permisos para editar este evento');
-                }
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al editar el evento');
             }
@@ -159,9 +162,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             if (!response.ok) {
-                if (response.status === 403) {
-                    throw new Error('No tienes permisos para eliminar este evento');
-                }
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al eliminar el evento');
             }

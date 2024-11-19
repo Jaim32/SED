@@ -38,10 +38,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             card.innerHTML = `
                 <h2>${event.title}</h2>
                 <p><strong>Fecha:</strong> ${event.date}</p>
+                <p><strong>Hora:</strong> ${event.hour}</p>
                 <p><strong>Ubicación:</strong> ${event.location}</p>
                 <p>${event.description}</p>
+                <p><strong>Contacto:</strong> <a href="mailto:${event.contact}">${event.contact}</a></p>
                 <div class="actions">
-                    <button onclick="openEditPopup('${event.title}', '${event.date}', '${event.location}', '${event.description}')">Editar</button>
+                    <button onclick="openEditPopup('${event.title}', '${event.date}', '${event.hour}', '${event.location}', '${event.description}', '${event.contact}')">Editar</button>
                     ${
                         isSuperAdmin
                             ? `<button class="delete-btn" onclick="deleteEvent('${event.title}')">Eliminar</button>`
@@ -57,12 +59,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Función para abrir el popup
-    window.openEditPopup = (title, date, location, description) => {
+    window.openEditPopup = (title, date, hour, location, description, contact) => {
         currentEventTitle = title;
         document.getElementById('edit-title').value = title;
         document.getElementById('edit-date').value = date;
+        document.getElementById('edit-hour').value = hour;
         document.getElementById('edit-location').value = location;
         document.getElementById('edit-description').value = description;
+        document.getElementById('edit-contact').value = contact;
 
         popup.classList.remove('hidden');
     };
@@ -78,8 +82,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const newTitle = document.getElementById('edit-title').value;
         const newDate = document.getElementById('edit-date').value;
+        const newHour = document.getElementById('edit-hour').value;
         const newLocation = document.getElementById('edit-location').value;
         const newDescription = document.getElementById('edit-description').value;
+        const newContact = document.getElementById('edit-contact').value;
 
         try {
             const response = await fetch('http://localhost:3001/events/edit', {
@@ -88,14 +94,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title: currentEventTitle, newTitle, newDate, newLocation, newDescription }),
+                body: JSON.stringify({
+                    title: currentEventTitle,
+                    newTitle,
+                    newDate,
+                    newHour,
+                    newLocation,
+                    newDescription,
+                    newContact,
+                }),
             });
 
             if (!response.ok) throw new Error('Error al editar el evento');
 
             alert('Evento editado exitosamente');
             popup.classList.add('hidden'); // Cerrar el popup
-            window.location.reload();
+            window.location.reload(); // Recargar los eventos
         } catch (error) {
             console.error('Error al guardar los cambios:', error);
             alert('Error al guardar los cambios');

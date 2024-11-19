@@ -21,23 +21,23 @@ if (!data.users.some(user => user.email === 'admin@admin.com')) {
     saveData();
 }
 
+// Crear el servidor
 const server = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url, true);
     const method = req.method;
 
     // Configuración de CORS
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Permitir todos los orígenes
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS'); // Métodos permitidos
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Cabeceras permitidas
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-    // Manejo de solicitudes preflight (OPTIONS)
     if (method === 'OPTIONS') {
-        res.writeHead(204); // No Content
+        res.writeHead(204);
         res.end();
         return;
     }
 
-    // Manejo de rutas
+    // Rutas de la API
     if (parsedUrl.pathname === '/register' && method === 'POST') {
         handleRegister(req, res);
     } else if (parsedUrl.pathname === '/login' && method === 'POST') {
@@ -48,22 +48,33 @@ const server = http.createServer((req, res) => {
         handleGetMyEvents(req, res);
     } else if (parsedUrl.pathname === '/events' && method === 'POST') {
         handleCreateEvent(req, res);
-    } else if (parsedUrl.pathname === '/events' && method === 'DELETE') {
-        handleDeleteEvent(req, res);
     } else if (parsedUrl.pathname === '/events/edit' && method === 'POST') {
         handleEditEvent(req, res);
+    } else if (parsedUrl.pathname === '/events' && method === 'DELETE') {
+        handleDeleteEvent(req, res);
     } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'Ruta no encontrada' }));
     }
 });
 
+// Funciones auxiliares
+function saveData() {
+    fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+}
+
+function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+// Registro de usuario
 function handleRegister(req, res) {
     let body = '';
     req.on('data', chunk => (body += chunk));
     req.on('end', async () => {
         const { name, email, password, role } = JSON.parse(body);
-        if (data.users.find(user => user.email === email)) {
+        if (data.users.some(user => user.email === email)) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'Usuario ya registrado' }));
             return;
@@ -77,31 +88,25 @@ function handleRegister(req, res) {
     });
 }
 
+// Inicio de sesión
 function handleLogin(req, res) {
     let body = '';
     req.on('data', chunk => (body += chunk));
     req.on('end', async () => {
-        try {
-            const { email, password } = JSON.parse(body);
-            const user = data.users.find(user => user.email === email);
-
-            if (!user || !(await bcrypt.compare(password, user.password))) {
-                res.writeHead(401, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Credenciales inválidas' }));
-                return;
-            }
-
-            const token = jwt.sign({ email: user.email, role: user.role }, SECRET, { expiresIn: '1h' });
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ token }));
-        } catch (error) {
-            console.error('Error en el inicio de sesión:', error);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Error interno del servidor' }));
+        const { email, password } = JSON.parse(body);
+        const user = data.users.find(user => user.email === email);
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Credenciales inválidas' }));
+            return;
         }
+        const token = jwt.sign({ email: user.email, role: user.role }, SECRET, { expiresIn: '1h' });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ token }));
     });
 }
 
+// Obtener todos los eventos
 function handleGetEvents(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -119,6 +124,7 @@ function handleGetEvents(req, res) {
     }
 }
 
+// Obtener eventos del usuario
 function handleGetMyEvents(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -137,11 +143,12 @@ function handleGetMyEvents(req, res) {
     }
 }
 
+// Crear evento
 function handleCreateEvent(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'No autorizado' }));
+        res.end('No autorizado');
         return;
     }
     let body = '';
@@ -150,12 +157,19 @@ function handleCreateEvent(req, res) {
         try {
             const decoded = jwt.verify(token, SECRET);
             if (decoded.role !== 'eventcreator' && decoded.role !== 'superadmin') {
-                res.writeHead(403, { 'Content-Type': 'application/json' });
+                res.writeHead(403);
                 res.end(JSON.stringify({ message: 'No tienes permisos para crear eventos' }));
                 return;
             }
-            const { title, date, location, description } = JSON.parse(body);
-            const newEvent = { title, date, location, description, user: decoded.email };
+            const { title, date, location, description, hour, contact } = JSON.parse(body);
+
+            if (!validateEmail(contact)) {
+                res.writeHead(400);
+                res.end(JSON.stringify({ message: 'El contacto debe ser un correo electrónico válido' }));
+                return;
+            }
+
+            const newEvent = { title, date, location, description, hour, contact, user: decoded.email };
             data.events.push(newEvent);
             saveData();
             res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -167,7 +181,8 @@ function handleCreateEvent(req, res) {
     });
 }
 
-function handleDeleteEvent(req, res) {
+// Editar evento
+function handleEditEvent(req, res) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -179,39 +194,13 @@ function handleDeleteEvent(req, res) {
     req.on('end', () => {
         try {
             const decoded = jwt.verify(token, SECRET);
-            if (decoded.role !== 'superadmin') {
-                res.writeHead(403, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'No tienes permisos para eliminar eventos' }));
+            const { title, newTitle, newDate, newLocation, newDescription, newHour, newContact } = JSON.parse(body);
+
+            if (newContact && !validateEmail(newContact)) {
+                res.writeHead(400);
+                res.end(JSON.stringify({ message: 'El contacto debe ser un correo electrónico válido' }));
                 return;
             }
-            const { title } = JSON.parse(body);
-            data.events = data.events.filter(event => event.title !== title);
-            saveData();
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Evento eliminado exitosamente' }));
-        } catch {
-            res.writeHead(401, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Token inválido' }));
-        }
-    });
-}
-
-function handleEditEvent(req, res) {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        res.writeHead(401);
-        res.end(JSON.stringify({ message: 'No autorizado' }));
-        return;
-    }
-    let body = '';
-    req.on('data', chunk => (body += chunk));
-    req.on('end', () => {
-        try {
-            const decoded = jwt.verify(token, SECRET);
-            console.log('Token decodificado:', decoded);
-
-            const { title, newTitle, newDate, newLocation, newDescription } = JSON.parse(body);
-            console.log('Datos recibidos para editar:', { title, newTitle, newDate, newLocation, newDescription });
 
             const eventIndex = data.events.findIndex(event => event.title === title);
             if (eventIndex === -1) {
@@ -220,49 +209,28 @@ function handleEditEvent(req, res) {
                 return;
             }
 
-            const event = data.events[eventIndex];
+            const updatedEvent = {
+                ...data.events[eventIndex],
+                title: newTitle || data.events[eventIndex].title,
+                date: newDate || data.events[eventIndex].date,
+                location: newLocation || data.events[eventIndex].location,
+                description: newDescription || data.events[eventIndex].description,
+                hour: newHour || data.events[eventIndex].hour,
+                contact: newContact || data.events[eventIndex].contact,
+            };
 
-            // Permitir que el superadmin edite cualquier evento
-            if (decoded.role === 'superadmin') {
-                data.events[eventIndex] = {
-                    ...event,
-                    title: newTitle || event.title,
-                    date: newDate || event.date,
-                    location: newLocation || event.location,
-                    description: newDescription || event.description,
-                };
-            }
-            // Permitir que el creador del evento edite solo sus eventos
-            else if (decoded.role === 'eventcreator' && event.user === decoded.email) {
-                data.events[eventIndex] = {
-                    ...event,
-                    title: newTitle || event.title,
-                    date: newDate || event.date,
-                    location: newLocation || event.location,
-                    description: newDescription || event.description,
-                };
-            } else {
-                res.writeHead(403, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'No tienes permisos para editar este evento' }));
-                return;
-            }
-
+            data.events[eventIndex] = updatedEvent;
             saveData();
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'Evento editado exitosamente' }));
-        } catch (err) {
-            console.error('Error al procesar la solicitud:', err);
-            res.writeHead(401);
-            res.end(JSON.stringify({ message: 'Token inválido o datos inválidos' }));
+        } catch {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Token inválido' }));
         }
     });
 }
 
-
-function saveData() {
-    fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
-}
-
+// Iniciar el servidor
 server.listen(PORT, () => {
     console.log(`API corriendo en http://localhost:${PORT}`);
 });

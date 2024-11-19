@@ -13,8 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const title = document.getElementById('title').value;
         const date = document.getElementById('date').value;
+        const hour = document.getElementById('hour').value;
         const location = document.getElementById('location').value;
         const description = document.getElementById('description').value;
+        const contact = document.getElementById('contact').value;
 
         try {
             const response = await fetch('http://localhost:3001/events', {
@@ -23,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title, date, location, description }),
+                body: JSON.stringify({ title, date, hour, location, description, contact }),
             });
 
             if (!response.ok) {

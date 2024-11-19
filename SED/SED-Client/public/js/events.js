@@ -55,8 +55,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             card.innerHTML = `
                 <h2>${event.title}</h2>
                 <p><strong>Fecha:</strong> ${event.date}</p>
+                <p><strong>Hora:</strong> ${event.hour}</p>
                 <p><strong>Ubicación:</strong> ${event.location}</p>
                 <p>${event.description}</p>
+                <p><strong>Contacto:</strong> <a href="mailto:${event.contact}">${event.contact}</a></p>
             `;
             container.appendChild(card);
         });
@@ -65,3 +67,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('Error al cargar los eventos');
     }
 });
+    
