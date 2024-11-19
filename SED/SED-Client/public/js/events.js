@@ -13,9 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userRole = payload.role;
 
         const buttonContainer = document.getElementById('button-container');
-        const container = document.getElementById('events-container');
+        const eventsContainer = document.getElementById('events-container');
+        const searchInput = document.getElementById('search-input');
 
-        if (!buttonContainer || !container) {
+        if (!buttonContainer || !eventsContainer || !searchInput) {
             console.error('Los contenedores necesarios no existen en el DOM.');
             return;
         }
@@ -39,43 +40,64 @@ document.addEventListener('DOMContentLoaded', async () => {
             buttonContainer.appendChild(manageEventsButton);
         }
 
-        // Solicitar los eventos al servidor
-        const response = await fetch('http://localhost:3001/events', {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+        // Función para cargar y filtrar eventos
+        async function loadEvents(searchQuery = '') {
+            const response = await fetch('http://localhost:3001/events', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-                localStorage.removeItem('token');
-                window.location.href = 'index.html';
+            if (!response.ok) {
+                if (response.status === 401) {
+                    alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                throw new Error('Error al cargar los eventos');
+            }
+
+            const events = await response.json();
+
+            // Filtrar eventos según la búsqueda
+            const filteredEvents = events.filter(event => {
+                const lowerCaseQuery = searchQuery.toLowerCase();
+                return event.title.toLowerCase().includes(lowerCaseQuery) || 
+                       event.description.toLowerCase().includes(lowerCaseQuery);
+            });
+
+            // Limpiar el contenedor de eventos
+            eventsContainer.innerHTML = '';
+
+            if (filteredEvents.length === 0) {
+                eventsContainer.innerHTML = '<p class="empty-message">No hay eventos disponibles.</p>';
                 return;
             }
-            throw new Error('Error al cargar los eventos');
+
+            // Mostrar eventos filtrados como tarjetas
+            filteredEvents.forEach(event => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h2>${event.title}</h2>
+                    <p><strong>Fecha:</strong> ${event.date}</p>
+                    <p><strong>Hora:</strong> ${event.hour}</p>
+                    <p><strong>Ubicación:</strong> ${event.location}</p>
+                    <p>${event.description}</p>
+                    <p><strong>Contacto:</strong> <a href="mailto:${event.contact}">${event.contact}</a></p>
+                `;
+                eventsContainer.appendChild(card);
+            });
         }
 
-        const events = await response.json();
+        // Cargar eventos iniciales sin filtro
+        await loadEvents();
 
-        // Mostrar mensaje si no hay eventos disponibles
-        if (events.length === 0) {
-            container.innerHTML = '<p class="empty-message">No hay eventos disponibles.</p>';
-            return;
-        }
-
-        // Crear tarjetas para cada evento
-        events.forEach(event => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <h2>${event.title}</h2>
-                <p><strong>Fecha:</strong> ${event.date}</p>
-                <p><strong>Hora:</strong> ${event.hour}</p>
-                <p><strong>Ubicación:</strong> ${event.location}</p>
-                <p>${event.description}</p>
-                <p><strong>Contacto:</strong> <a href="mailto:${event.contact}">${event.contact}</a></p>
-            `;
-            container.appendChild(card);
+        // Escuchar el evento de entrada en el campo de búsqueda
+        searchInput.addEventListener('input', () => {
+            const searchQuery = searchInput.value.trim(); // Texto de búsqueda
+            loadEvents(searchQuery); // Recargar eventos con el filtro aplicado
         });
+
     } catch (error) {
         console.error('Error al cargar los eventos:', error);
         alert('Error al cargar los eventos');

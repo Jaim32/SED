@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const popup = document.getElementById('edit-popup');
     const form = document.getElementById('edit-event-form');
     const cancelEditButton = document.getElementById('cancel-edit');
+    const backToEventsButton = document.getElementById('back-to-events-button'); // Botón para volver a eventos
 
     let currentEventId = ''; // ID del evento a editar
 
@@ -145,4 +146,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Error al eliminar el evento');
         }
     };
+
+    // Redirigir a la página de todos los eventos al hacer clic en "Volver a Todos los Eventos"
+    backToEventsButton.addEventListener('click', () => {
+        window.location.href = 'events.html'; // Redirige a la página de todos los eventos
+    });
 });

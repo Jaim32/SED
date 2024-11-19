@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cancelEditButton = document.getElementById('cancel-edit');
     const container = document.getElementById('my-events-container');
     const createEventButton = document.getElementById('create-event-button');
+    const backToEventsButton = document.getElementById('back-to-events-button'); // Botón para volver a todos los eventos
 
-    if (!popup || !form || !cancelEditButton || !container || !createEventButton) {
+    if (!popup || !form || !cancelEditButton || !container || !createEventButton || !backToEventsButton) {
         console.error('Elementos necesarios no encontrados. Verifica la estructura de la página.');
         return;
     }
@@ -89,20 +90,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Función para abrir el popup de edición
-    // Función para abrir el popup de edición
-window.openEditPopup = (id, title, date, hour, location, description, contact) => {
-    currentEventId = id; // Guarda el id del evento
-    currentEventTitle = title; // Guarda el título del evento
-    document.getElementById('edit-title').value = title;
-    document.getElementById('edit-date').value = date;
-    document.getElementById('edit-hour').value = hour;
-    document.getElementById('edit-location').value = location;
-    document.getElementById('edit-description').value = description;
-    document.getElementById('edit-contact').value = contact;
+    window.openEditPopup = (id, title, date, hour, location, description, contact) => {
+        currentEventId = id;
+        document.getElementById('edit-title').value = title;
+        document.getElementById('edit-date').value = date;
+        document.getElementById('edit-hour').value = hour;
+        document.getElementById('edit-location').value = location;
+        document.getElementById('edit-description').value = description;
+        document.getElementById('edit-contact').value = contact;
 
-    popup.classList.remove('hidden');
-};
-
+        popup.classList.remove('hidden');
+    };
 
     // Cerrar el popup al cancelar
     cancelEditButton.addEventListener('click', () => {
@@ -180,6 +178,11 @@ window.openEditPopup = (id, title, date, hour, location, description, contact) =
     // Redirigir a la página de creación de eventos al hacer clic en "Crear Evento"
     createEventButton.addEventListener('click', () => {
         window.location.href = 'create-event.html'; // Redirige a la página de creación
+    });
+
+    // Redirigir a la página de todos los eventos al hacer clic en "Volver a Todos los Eventos"
+    backToEventsButton.addEventListener('click', () => {
+        window.location.href = 'events.html'; // Redirige a la página de todos los eventos
     });
 
     // Cargar eventos al cargar la página

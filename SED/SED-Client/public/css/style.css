@@ -1,4 +1,3 @@
-/* Estilos globales */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
@@ -29,7 +28,6 @@ a:hover {
     padding: 20px;
 }
 
-/* Botones */
 button {
     background-color: #007bff;
     color: white;
@@ -46,7 +44,6 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Contenedores */
 #button-container {
     text-align: center;
     margin: 20px 0;
@@ -62,7 +59,6 @@ button:hover {
     margin: 20px;
 }
 
-/* Tarjetas (cards) */
 .card {
     background: white;
     border-radius: 10px;
@@ -71,6 +67,9 @@ button:hover {
     padding: 20px;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .card:hover {
@@ -82,27 +81,26 @@ button:hover {
     margin: 10px 0;
     font-size: 18px;
     color: #007bff;
+    word-wrap: break-word;
 }
 
 .card p {
     margin: 5px 0;
     color: #555;
+    word-wrap: break-word;
 }
 
 .card .actions {
     margin-top: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .card .actions button {
     background-color: #28a745;
-    margin: 5px;
+    margin: 5px 0;
 }
 
-.card .actions button:hover {
-    background-color: #218838;
-}
-
-/* Botón eliminar */
 .card .actions .delete-btn {
     background-color: #dc3545;
 }
@@ -111,7 +109,6 @@ button:hover {
     background-color: #c82333;
 }
 
-/* Formularios */
 form {
     max-width: 500px;
     margin: 0 auto;
@@ -151,7 +148,6 @@ form button:hover {
     background-color: #0056b3;
 }
 
-/* Mensaje vacío */
 .empty-message {
     text-align: center;
     color: #666;
@@ -159,7 +155,6 @@ form button:hover {
     margin-top: 20px;
 }
 
-/* Popup */
 .popup {
     position: fixed;
     top: 0;
@@ -229,54 +224,6 @@ form button:hover {
     opacity: 0.9;
 }
 
-
-.events-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 20px;
-}
-
-.card {
-    border: 1px solid #ccc;
-    padding: 16px;
-    border-radius: 8px;
-    width: calc(100% / 3 - 20px);
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.card h2 {
-    font-size: 1.5em;
-    margin-bottom: 8px;
-}
-
-.card .actions {
-    display: flex;
-    margin-top: 12px;
-}
-
-button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1em;
-}
-
-button.edit-btn {
-    background-color: #4CAF50;
-    color: white;
-}
-
-button.delete-btn {
-    background-color: #f44336;
-    color: white;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-/* Header Principal */
 .main-header {
     background-color: #000000;
     color: white;
@@ -290,41 +237,51 @@ button:hover {
     z-index: 1000;
 }
 
-/* Contenedor del Header */
 .header-container {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
 }
 
-/* Estilo del Título del Sitio */
 .website-title {
     font-size: 1.8em;
     font-weight: bold;
-    margin: 0;
-    text-align: left;
-    color: #ffffff;
+    color: white;
 }
 
-/* Botón de Log Out */
 .logout-btn {
-    background-color: #f28b82; /* Rojo pastel */
+    background-color: #f44336;
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 8px 12px;
+    border-radius: 5px;
+    padding: 10px;
     font-size: 1em;
     cursor: pointer;
-    margin-left: auto;
 }
 
 .logout-btn:hover {
-    background-color: #fa5f5f; /* Rojo pastel más oscuro */
+    background-color: #fa5f5f;
     opacity: 0.9;
 }
 
-.website-link {
-    text-decoration: none; /* Elimina el subrayado del enlace */
-    color: inherit; /* Usa el mismo color que el texto */
+#search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-box {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    width: 220px;
+    transition: box-shadow 0.3s ease;
+}
+
+.search-box:focus {
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
+    border-color: #007bff;
 }
