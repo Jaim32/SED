@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!confirm(`¿Estás seguro de eliminar el evento "${title}"?`)) return;
 
         try {
-            const response = await fetch('http://localhost:3001/events', {
+            const response = await fetch('http://localhost:3001/eventsDelete', {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

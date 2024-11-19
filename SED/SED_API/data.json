@@ -43,27 +43,13 @@
   ],
   "events": [
     {
-      "title": "chamba_web",
+      "title": "chamba_web3",
       "date": "2024-11-18",
       "location": "casa de chavez",
       "description": "chambear el proyecto de web",
-      "user": "admin@admin.com"
-    },
-    {
-      "title": "22222222222222222222222222",
-      "date": "2024-11-01",
-      "location": "11111111111111",
-      "description": "11",
       "user": "admin@admin.com",
-      "hour": "10:01",
-      "contact": "asa@gmail.com"
-    },
-    {
-      "title": "zzzz",
-      "date": "2024-11-02",
-      "location": "aaaaaaaaaaaaaaaaaaaaaa",
-      "description": "aaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "user": "jm@gmailcom"
+      "hour": "11:11",
+      "contact": "12@gmail.com"
     },
     {
       "title": "aaaaaaaaaaaaaaa",
@@ -103,12 +89,12 @@
       "user": "jm2@gmail.com"
     },
     {
-      "title": "qqqqqqqqqqqqqqqq",
-      "date": "1000-10-10",
-      "location": "asdasd",
-      "description": "dsasdas",
-      "hour": "10:10",
-      "contact": "q@gmail.com",
+      "title": "qqqqqqqqqqqqqqqqqq",
+      "date": "1111-11-11",
+      "location": "111111111111111111111111111",
+      "description": "1111111111111111111",
+      "hour": "11:11",
+      "contact": "111111111111111111111111111@gmail.com",
       "user": "admin@admin.com"
     }
   ]

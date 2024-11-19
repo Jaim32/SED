@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Función para cargar eventos del usuario actual
     async function loadEvents() {
         try {
-            const response = await fetch('http://localhost:3001/my-events', {
+            const response = await fetch('http://localhost:3001/events/my', {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Función para eliminar un evento
     async function deleteEvent(title) {
         try {
-            const response = await fetch('http://localhost:3001/events', {
+            const response = await fetch('http://localhost:3001/eventsDelete', {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

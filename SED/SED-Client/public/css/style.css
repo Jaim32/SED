@@ -323,3 +323,8 @@ button:hover {
     background-color: #fa5f5f; /* Rojo pastel más oscuro */
     opacity: 0.9;
 }
+
+.website-link {
+    text-decoration: none; /* Elimina el subrayado del enlace */
+    color: inherit; /* Usa el mismo color que el texto */
+}
