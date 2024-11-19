@@ -1,21 +1,37 @@
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
 
-    const response = await fetch('http://localhost:3001/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-    });
+    // Validaciones básicas de entrada
+    if (!email || !password) {
+        alert('Por favor, completa todos los campos');
+        return;
+    }
 
-    const data = await response.json();
-    if (response.ok) {
-        alert('Inicio de sesión exitoso');
-        localStorage.setItem('token', data.token);
-        window.location.href = 'events.html';
-    } else {
-        alert(data.message);
+    try {
+        // Realizar la solicitud al servidor
+        const response = await fetch('http://localhost:3001/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+
+        // Analizar la respuesta
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Inicio de sesión exitoso');
+            localStorage.setItem('token', data.token); // Guardar el token en localStorage
+            window.location.href = 'events.html'; // Redirigir a la página de eventos
+        } else {
+            // Mostrar mensaje de error del servidor
+            alert(data.message || 'Error al iniciar sesión');
+        }
+    } catch (error) {
+        // Manejar errores de red u otros problemas inesperados
+        console.error('Error al intentar iniciar sesión:', error);
+        alert('Error al intentar iniciar sesión. Por favor, intenta nuevamente.');
     }
 });

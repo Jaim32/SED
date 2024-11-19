@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('edit-event-form');
     const cancelEditButton = document.getElementById('cancel-edit');
 
-    let currentEventTitle = ''; // Título original del evento a editar
+    let currentEventId = ''; // ID del evento a editar
 
     // Verificar el rol del usuario
     const payload = JSON.parse(atob(token.split('.')[1]));
@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <p>${event.description}</p>
                 <p><strong>Contacto:</strong> <a href="mailto:${event.contact}">${event.contact}</a></p>
                 <div class="actions">
-                    <button onclick="openEditPopup('${event.title}', '${event.date}', '${event.hour}', '${event.location}', '${event.description}', '${event.contact}')">Editar</button>
+                    <button onclick="openEditPopup('${event._id}', '${event.title}', '${event.date}', '${event.hour}', '${event.location}', '${event.description}', '${event.contact}')">Editar</button>
                     ${
                         isSuperAdmin
-                            ? `<button class="delete-btn" onclick="deleteEvent('${event.title}')">Eliminar</button>`
+                            ? `<button class="delete-btn" onclick="deleteEvent('${event._id}')">Eliminar</button>`
                             : ''
                     }
                 </div>
@@ -54,13 +54,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             container.appendChild(card);
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error al cargar los eventos:', error);
         alert('Error al cargar los eventos');
     }
 
     // Función para abrir el popup
-    window.openEditPopup = (title, date, hour, location, description, contact) => {
-        currentEventTitle = title;
+    window.openEditPopup = (id, title, date, hour, location, description, contact) => {
+        currentEventId = id;
         document.getElementById('edit-title').value = title;
         document.getElementById('edit-date').value = date;
         document.getElementById('edit-hour').value = hour;
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    title: currentEventTitle,
+                    id: currentEventId,
                     newTitle,
                     newDate,
                     newHour,
@@ -105,7 +105,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }),
             });
 
-            if (!response.ok) throw new Error('Error al editar el evento');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al editar el evento');
+            }
 
             alert('Evento editado exitosamente');
             popup.classList.add('hidden'); // Cerrar el popup
@@ -117,8 +120,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Eliminar evento
-    window.deleteEvent = async (title) => {
-        if (!confirm(`¿Estás seguro de eliminar el evento "${title}"?`)) return;
+    window.deleteEvent = async (id) => {
+        if (!confirm(`¿Estás seguro de eliminar el evento?`)) return;
 
         try {
             const response = await fetch('http://localhost:3001/eventsDelete', {
@@ -127,10 +130,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title }),
+                body: JSON.stringify({ id }),
             });
 
-            if (!response.ok) throw new Error('Error al eliminar el evento');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al eliminar el evento');
+            }
 
             alert('Evento eliminado exitosamente');
             window.location.reload();

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
+    
     if (!token) {
         alert('No estás autenticado');
         window.location.href = 'index.html';
@@ -8,15 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('create-event-form');
 
+    if (!form) {
+        console.error('Formulario no encontrado. Asegúrate de que el elemento con ID "create-event-form" exista en el HTML.');
+        return;
+    }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const title = document.getElementById('title').value;
-        const date = document.getElementById('date').value;
-        const hour = document.getElementById('hour').value;
-        const location = document.getElementById('location').value;
-        const description = document.getElementById('description').value;
-        const contact = document.getElementById('contact').value;
+        const title = document.getElementById('title')?.value;
+        const date = document.getElementById('date')?.value;
+        const hour = document.getElementById('hour')?.value;
+        const location = document.getElementById('location')?.value;
+        const description = document.getElementById('description')?.value;
+        const contact = document.getElementById('contact')?.value;
+
+        // Verificar que todos los campos están completos
+        if (!title || !date || !hour || !location || !description || !contact) {
+            alert('Por favor, completa todos los campos.');
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:3001/events', {
@@ -36,7 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 if (response.status === 403) {
-                    throw new Error('No tienes permisos para crear eventos');
+                    alert('No tienes permisos para crear eventos.');
+                    return;
                 }
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error al crear el evento');

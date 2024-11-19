@@ -1,5 +1,5 @@
 const fs = require('fs');
-const connectToDatabase = require('../config/database');
+const connectToDatabase = require('../config/mongo');
 
 async function migrateData() {
     const db = await connectToDatabase();

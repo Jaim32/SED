@@ -39,6 +39,12 @@
       "email": "jm2@gmail.com",
       "password": "$2b$10$KjZ52rKXDX1VQUWzFaK7WuRBrshU88kt.e0XTijyW8ePPcdfI.L4.",
       "role": "eventcreator"
+    },
+    {
+      "name": "canjura",
+      "email": "canjura@canjura.com",
+      "password": "$2b$10$MiEi9GeFKJQbeGV.40cfr.qh49VD6Wk3IPvnDgW4Z4URTHavUquga",
+      "role": "eventcreator"
     }
   ],
   "events": [

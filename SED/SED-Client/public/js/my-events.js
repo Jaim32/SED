@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    let currentEventTitle = ''; // Título del evento a editar
+    let currentEventId = ''; // ID del evento a editar
 
     // Función para cargar eventos del usuario actual
     async function loadEvents() {
@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>${event.description}</p>
                     <p><strong>Contacto:</strong> <a href="mailto:${event.contact}">${event.contact}</a></p>
                     <div class="actions">
-                        <button class="edit-btn" data-title="${event.title}" data-date="${event.date}" data-hour="${event.hour}" data-location="${event.location}" data-description="${event.description}" data-contact="${event.contact}">Editar</button>
-                        <button class="delete-btn" data-title="${event.title}">Eliminar</button>
+                        <button class="edit-btn" data-id="${event._id}" data-title="${event.title}" data-date="${event.date}" data-hour="${event.hour}" data-location="${event.location}" data-description="${event.description}" data-contact="${event.contact}">Editar</button>
+                        <button class="delete-btn" data-id="${event._id}">Eliminar</button>
                     </div>
                 `;
                 container.appendChild(card);
@@ -67,18 +67,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Asignar eventos a los botones de editar
             document.querySelectorAll('.edit-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    const { title, date, hour, location, description, contact } = e.target.dataset;
+                    const { id, title, date, hour, location, description, contact } = e.target.dataset;
 
-                    openEditPopup(title, date, hour, location, description, contact);
+                    openEditPopup(id, title, date, hour, location, description, contact);
                 });
             });
 
             // Asignar eventos a los botones de eliminar
             document.querySelectorAll('.delete-btn').forEach(button => {
                 button.addEventListener('click', async (e) => {
-                    const title = e.target.dataset.title;
-                    if (confirm(`¿Estás seguro de que deseas eliminar el evento "${title}"?`)) {
-                        await deleteEvent(title);
+                    const id = e.target.dataset.id;
+                    if (confirm(`¿Estás seguro de que deseas eliminar el evento?`)) {
+                        await deleteEvent(id);
                     }
                 });
             });
@@ -89,17 +89,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Función para abrir el popup de edición
-    window.openEditPopup = (title, date, hour, location, description, contact) => {
-        currentEventTitle = title;
-        document.getElementById('edit-title').value = title;
-        document.getElementById('edit-date').value = date;
-        document.getElementById('edit-hour').value = hour;
-        document.getElementById('edit-location').value = location;
-        document.getElementById('edit-description').value = description;
-        document.getElementById('edit-contact').value = contact;
+    // Función para abrir el popup de edición
+window.openEditPopup = (id, title, date, hour, location, description, contact) => {
+    currentEventId = id; // Guarda el id del evento
+    currentEventTitle = title; // Guarda el título del evento
+    document.getElementById('edit-title').value = title;
+    document.getElementById('edit-date').value = date;
+    document.getElementById('edit-hour').value = hour;
+    document.getElementById('edit-location').value = location;
+    document.getElementById('edit-description').value = description;
+    document.getElementById('edit-contact').value = contact;
 
-        popup.classList.remove('hidden');
-    };
+    popup.classList.remove('hidden');
+};
+
 
     // Cerrar el popup al cancelar
     cancelEditButton.addEventListener('click', () => {
@@ -125,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    title: currentEventTitle,
+                    id: currentEventId,
                     newTitle,
                     newDate,
                     newHour,
@@ -150,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Función para eliminar un evento
-    async function deleteEvent(title) {
+    async function deleteEvent(id) {
         try {
             const response = await fetch('http://localhost:3001/eventsDelete', {
                 method: 'DELETE',
@@ -158,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title }),
+                body: JSON.stringify({ id }),
             });
 
             if (!response.ok) {

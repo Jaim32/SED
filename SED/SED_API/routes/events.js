@@ -12,7 +12,7 @@ function eventRoutes(req, res, parsedUrl, method) {
         } else if (parsedUrl.pathname === '/events/edit' && method === 'POST') {
             editEvent(req, res, decoded);
         } else if (parsedUrl.pathname === '/eventsDelete' && method === 'DELETE') {
-            deleteEvent(req, res, decoded); 
+            deleteEvent(req, res, decoded);
         } else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'Ruta no encontrada' }));

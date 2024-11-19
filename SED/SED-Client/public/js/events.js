@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
+
     if (!token) {
         alert('No estás autenticado');
         window.location.href = 'index.html';
@@ -7,12 +8,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
+        // Decodificar el token para obtener el rol del usuario
         const payload = JSON.parse(atob(token.split('.')[1]));
         const userRole = payload.role;
 
         const buttonContainer = document.getElementById('button-container');
+        const container = document.getElementById('events-container');
 
-        // Botones dinámicos
+        if (!buttonContainer || !container) {
+            console.error('Los contenedores necesarios no existen en el DOM.');
+            return;
+        }
+
+        // Agregar botones dinámicos según el rol del usuario
         if (userRole === 'eventcreator' || userRole === 'superadmin') {
             const myEventsButton = document.createElement('button');
             myEventsButton.textContent = 'Ver Mis Eventos';
@@ -31,24 +39,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             buttonContainer.appendChild(manageEventsButton);
         }
 
-        // Cargar eventos
+        // Solicitar los eventos al servidor
         const response = await fetch('http://localhost:3001/events', {
             headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!response.ok) {
+            if (response.status === 401) {
+                alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+                localStorage.removeItem('token');
+                window.location.href = 'index.html';
+                return;
+            }
             throw new Error('Error al cargar los eventos');
         }
 
         const events = await response.json();
-        const container = document.getElementById('events-container');
 
+        // Mostrar mensaje si no hay eventos disponibles
         if (events.length === 0) {
             container.innerHTML = '<p class="empty-message">No hay eventos disponibles.</p>';
             return;
         }
 
-        // Mostrar eventos como tarjetas (cards)
+        // Crear tarjetas para cada evento
         events.forEach(event => {
             const card = document.createElement('div');
             card.className = 'card';
@@ -67,4 +81,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('Error al cargar los eventos');
     }
 });
-    
