@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Función para eliminar un evento
     async function deleteEvent(id) {
         try {
-            const response = await fetch('http://localhost:3001/eventsDelete', {
+            const response = await fetch('http://192.168.58.104:3001/eventsDelete', {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
