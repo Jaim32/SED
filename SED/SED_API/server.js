@@ -3,32 +3,27 @@ const http = require('http');
 const url = require('url');
 const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/events');
-const { connectToDatabase, closeDatabaseConnection } = require('./config/mongo'); // Conexión a MongoDB
+const { connectToDatabase, closeDatabaseConnection } = require('./config/mongo');
 
 const PORT = process.env.PORT || 3001;
-const allowedOrigins = ['http://localhost:3000', 'http://192.168.58.104:3000','http://192.168.243.205:3000'];
+const allowedOrigins = ['http://localhost:3000', 'http://192.168.58.104:3000', 'http://192.168.243.205:3000'];
 
 async function startServer() {
     try {
         await connectToDatabase();
-        console.log('Conectado a la base de datos MongoDB');
 
         const server = http.createServer(async (req, res) => {
             try {
                 const parsedUrl = url.parse(req.url, true);
                 const method = req.method;
 
-                // Configuración de CORS
                 const origin = req.headers.origin;
                 if (allowedOrigins.includes(origin)) {
                     res.setHeader('Access-Control-Allow-Origin', origin);
                     res.setHeader('Access-Control-Allow-Credentials', 'true');
                     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
                     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-                } else {
-                    res.setHeader('Access-Control-Allow-Origin', 'null');
                 }
-
 
                 if (method === 'OPTIONS') {
                     res.writeHead(204);
@@ -36,7 +31,6 @@ async function startServer() {
                     return;
                 }
 
-                // Rutas
                 if (parsedUrl.pathname.startsWith('/auth')) {
                     await authRoutes(req, res, parsedUrl, method);
                 } else if (parsedUrl.pathname.startsWith('/events')) {
@@ -52,30 +46,24 @@ async function startServer() {
             }
         });
 
-        server.listen(PORT, 'http://192.168.243.205:3000', () => {
+        server.listen(PORT, '192.168.243.205', () => {
             console.log(`Servidor corriendo en http://192.168.243.205:${PORT}`);
         });
 
         process.on('SIGINT', async () => {
-            console.log('\nCerrando el servidor...');
             try {
                 await closeDatabaseConnection();
-                console.log('Conexión a MongoDB cerrada');
-            } catch (error) {
-                console.error('Error al cerrar la conexión a MongoDB:', error);
+            } finally {
+                process.exit(0);
             }
-            process.exit(0);
         });
 
         process.on('SIGTERM', async () => {
-            console.log('\nCerrando el servidor...');
             try {
                 await closeDatabaseConnection();
-                console.log('Conexión a MongoDB cerrada');
-            } catch (error) {
-                console.error('Error al cerrar la conexión a MongoDB:', error);
+            } finally {
+                process.exit(0);
             }
-            process.exit(0);
         });
     } catch (error) {
         console.error('Error al iniciar el servidor:', error.message);
