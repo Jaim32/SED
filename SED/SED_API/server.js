@@ -6,7 +6,7 @@ const eventRoutes = require('./routes/events');
 const { connectToDatabase, closeDatabaseConnection } = require('./config/mongo');
 
 const PORT = process.env.PORT || 3001;
-const allowedOrigins = ['http://localhost:3000', 'http://192.168.58.104:3000', 'http://192.168.243.205:3000'];
+const allowedOrigins = ['http://localhost:3000', 'http://192.168.58.104', 'http://192.168.243.205'];
 
 async function startServer() {
     try {
