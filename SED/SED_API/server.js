@@ -6,7 +6,7 @@ const eventRoutes = require('./routes/events');
 const { connectToDatabase, closeDatabaseConnection } = require('./config/mongo'); // Conexión a MongoDB
 
 const PORT = process.env.PORT || 3001;
-const allowedOrigins = ['http://localhost:3000', 'http://192.168.58.104:3000'];
+const allowedOrigins = ['http://localhost:3000', 'http://192.168.58.104:3000','http://192.168.243.205:3000'];
 
 async function startServer() {
     try {
@@ -52,8 +52,8 @@ async function startServer() {
             }
         });
 
-        server.listen(PORT, '192.168.58.104', () => {
-            console.log(`Servidor corriendo en http://192.168.58.104:${PORT}`);
+        server.listen(PORT, 'http://192.168.243.205:3000', () => {
+            console.log(`Servidor corriendo en http://192.168.243.205:3000:${PORT}`);
         });
 
         process.on('SIGINT', async () => {
