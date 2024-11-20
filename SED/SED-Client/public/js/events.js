@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Función para cargar y filtrar eventos
         async function loadEvents(searchQuery = '') {
-            const response = await fetch('http://localhost:3001/events', {
+            const response = await fetch('http://192.168.58.104:3001/events', {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

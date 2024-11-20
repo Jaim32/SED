@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Cargar eventos
     try {
-        const response = await fetch('http://localhost:3001/events', {
+        const response = await fetch('http://192.168.58.104:3001/events', {
             headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const newContact = document.getElementById('edit-contact').value;
 
         try {
-            const response = await fetch('http://localhost:3001/events/edit', {
+            const response = await fetch('http://192.168.58.104:3001/events/edit', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!confirm(`¿Estás seguro de eliminar el evento?`)) return;
 
         try {
-            const response = await fetch('http://localhost:3001/eventsDelete', {
+            const response = await fetch('http://192.168.58.104:3001/eventsDelete', {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,

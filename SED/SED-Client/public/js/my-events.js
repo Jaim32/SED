@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Función para cargar eventos del usuario actual
     async function loadEvents() {
         try {
-            const response = await fetch('http://localhost:3001/events/my', {
+            const response = await fetch('http://192.168.58.104:3001/events/my', {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const newContact = document.getElementById('edit-contact').value;
 
         try {
-            const response = await fetch('http://localhost:3001/events/edit', {
+            const response = await fetch('http://192.168.58.104:3001/events/edit', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
