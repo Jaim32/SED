@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('http://192.168.58.104:3001/events', {
+            const response = await fetch('http://192.168.243.205:3001/events', {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
