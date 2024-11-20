@@ -53,7 +53,7 @@ async function startServer() {
         });
 
         server.listen(PORT, 'http://192.168.243.205:3000', () => {
-            console.log(`Servidor corriendo en http://192.168.243.205:3000:${PORT}`);
+            console.log(`Servidor corriendo en http://192.168.243.205:${PORT}`);
         });
 
         process.on('SIGINT', async () => {
