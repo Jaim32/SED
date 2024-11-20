@@ -49,8 +49,8 @@ async function startServer() {
             }
         });
 
-        server.listen(PORT, '0.0.0.0', () => {
-            console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`);
+        server.listen(PORT, '192.168.58.104', () => {
+            console.log(`Servidor corriendo en http://192.168.58.104:${PORT}`);
         });
 
         process.on('SIGINT', async () => {
