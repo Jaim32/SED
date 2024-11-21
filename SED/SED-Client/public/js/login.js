@@ -12,7 +12,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
     try {
         // Realizar la solicitud al servidor
-        const response = await fetch('https://192.168.243.205:3001/auth/login', {
+        const response = await fetch('http://192.168.243.205:3001/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
