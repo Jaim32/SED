@@ -6,7 +6,7 @@ const eventRoutes = require('./routes/events');
 const { connectToDatabase, closeDatabaseConnection } = require('./config/mongo');
 
 const PORT = process.env.PORT || 3001;
-const allowedOrigins = ['http://localhost:3000', 'http://192.168.58.104', 'http://192.168.243.205'];
+const allowedOrigins = ['http://localhost:3000', 'http://192.168.58.104', 'https://192.168.243.205'];
 
 async function startServer() {
     try {
@@ -47,7 +47,7 @@ async function startServer() {
         });
 
         server.listen(PORT, '192.168.243.205', () => {
-            console.log(`Servidor corriendo en http://192.168.243.205:${PORT}`);
+            console.log(`Servidor corriendo en https://192.168.243.205:${PORT}`);
         });
 
         process.on('SIGINT', async () => {
