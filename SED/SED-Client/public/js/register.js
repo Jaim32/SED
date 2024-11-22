@@ -25,7 +25,7 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
 
     try {
         // Realizar la solicitud de registro
-        const response = await fetch('http://192.168.243.205:3001/auth/register', {
+        const response = await fetch('http://192.168.77.29:3001/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password, role }),
