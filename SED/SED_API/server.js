@@ -11,7 +11,7 @@ const allowedOrigins = [
     'http://localhost:3000',
     'http://192.168.58.104',
     'http://192.168.243.205',
-    'https://example.com' // Añade aquí los dominios HTTPS si usas uno
+    'https://192.168.243.205' // Añade aquí los dominios HTTPS si usas uno
 ];
 
 async function startServer() {
